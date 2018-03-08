@@ -24,7 +24,7 @@ class Detik(scrapy.Spider):
             link_page = Selector(text=isi).xpath('//div[@class="desc_nhl"]/a/@href').extract_first()
             item = {
                 'headline' : Selector(text=isi).xpath('//article/div[@class="desc_nhl"]/a[@data-category="WP Kanal Jawatimur"]/h2/text()').extract_first(),
-                'main_headline' : Selector(text=isi).xpath('//div[@class="desc_nhl"]/text()').extract_first(),
+                'main_headline' : Selector(text=isi).xpath('//div[@class="desc_nhl"]/text()[4]').extract_first(),
                 'date' : Selector(text=isi).xpath('//div[@class="desc_nhl"]/span[@class="labdate f11"]/text()').extract_first(),
                 'url' : link_page
             }
