@@ -22,10 +22,12 @@ class Detik(scrapy.Spider):
         rows = response.xpath('//div[@class="m_content"]/ul/li[not(@class)]').extract()
         for isi in rows:
             link_page = Selector(text=isi).xpath('//div[@class="desc_nhl"]/a/@href').extract_first()
+            clean_date = Selector(text=isi).xpath('//div[@class="desc_nhl"]/span[@class="labdate f11"]/text()').extract_first()
+            clean_date = clean_date.replace("DETIKNEWS | ", "")
             item = {
                 'headline' : Selector(text=isi).xpath('//article/div[@class="desc_nhl"]/a[@data-category="WP Kanal Jawatimur"]/h2/text()').extract_first(),
                 'main_headline' : Selector(text=isi).xpath('//div[@class="desc_nhl"]/text()[4]').extract_first().strip(),
-                'date' : Selector(text=isi).xpath('//div[@class="desc_nhl"]/span[@class="labdate f11"]/text()').extract_first(),
+                'date' : clean_date,
                 'url' : link_page
             }
 
@@ -62,11 +64,8 @@ class Detik(scrapy.Spider):
         # ----------------------------------
 
         item = response.meta['item']
-        # item['content'] = response.xpath('normalize-space(//article/div/div[@class="detail_text"])').extract_first()
-        
-        # item['clean_table'] = response.xpath('//table//td//text()').extract()
-
         filter_text = response.xpath('normalize-space(//article/div/div[@class="detail_text"])').extract_first() 
+
         clean_table = response.xpath('//table//td//text()').extract()
         if clean_table:
             for remove_text in clean_table:
