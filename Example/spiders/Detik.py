@@ -62,5 +62,20 @@ class Detik(scrapy.Spider):
         # ----------------------------------
 
         item = response.meta['item']
-        item['content'] = response.xpath('normalize-space(.//article/div/div[@class="detail_text"])').extract()
+        # item['content'] = response.xpath('normalize-space(//article/div/div[@class="detail_text"])').extract_first()
+        
+        # item['clean_table'] = response.xpath('//table//td//text()').extract()
+
+        filter_text = response.xpath('normalize-space(//article/div/div[@class="detail_text"])').extract_first() 
+        clean_table = response.xpath('//table//td//text()').extract()
+        if clean_table:
+            for remove_text in clean_table:
+                filter_text = filter_text.replace(remove_text, "")
+
+        clean_pic_top = response.xpath('//div[@class="pic_artikel pic_artikel_por"]/span/text()').extract()
+        if clean_pic_top:
+            for remove_pic in clean_pic_top:
+                filter_text = filter_text.replace(remove_pic, "")
+
+        item['content'] = filter_text
         yield item
